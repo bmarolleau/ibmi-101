@@ -51,13 +51,20 @@ assets/
 
 ## Tools Referenced
 
-| Tool | Purpose |
-|------|---------|
-| **IBM Bob** | AI-powered IBM i developer assistant — VS Code + Code for IBM i |
-| **IBM ACS** | Access Client Solutions — 5250, SQL Scripts, Visual Explain |
-| **VS Code + Code for IBM i** | Modern development environment |
-| **RPGUnit** | Unit testing framework for RPG |
-| **ARCAD** | Enterprise modernization and SCM tooling |
+| Tool | Vendor | Purpose |
+|------|--------|---------|
+| **IBM Bob** | IBM | AI-powered IBM i developer assistant — VS Code + Code for IBM i |
+| **IBM ACS** | IBM | Access Client Solutions — 5250, SQL Scripts, Visual Explain |
+| **VS Code + Code for IBM i** | Halcyon / open-source | Modern IDE for IBM i development |
+| **RDi** | IBM | Eclipse-based IDE for QSYS member editing and debugging |
+| **RPGUnit** | Open-source | Unit testing framework for RPG |
+| **ARCAD** | ARCAD Software | Enterprise modernization, SCM, CI/CD, code analysis |
+| **Aldon LMi** | Rocket Software | Change management, approval workflows, audit trails |
+| **TD/OMS (Turnover)** | Remain Software | Object-level version control and promotion |
+| **Lansa** | Lansa | 4GL low-code IDE generating RPG on IBM i |
+| **Synon / CA 2E** | Broadcom | Legacy 4GL generating RPG — widely deployed |
+| **Profound UI / Profound.js** | Profound Logic | Modernize 5250 UIs to web/mobile; Node.js on IBM i |
+| **Fortra** | Fortra | IBM i security, automation, and operations tooling |
 
 ---
 
