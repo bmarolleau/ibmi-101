@@ -2996,6 +2996,7 @@ CHGOBJOWN OBJ(MYLIB/CLIENTPF) OBJTYPE(*FILE) NEWOWN(APPADM)
 - **Tutorials — Learn RPG Programming on IBM i (Complete Beginner Series)**
   - Video 4 — Learn RPG on IBM i with VSCode. Our first RPG program.
   - RPG Tutorial: <https://yourlearning.ibm.com/activity/AB-6182FE3C5838>
+  - Written tutorial (Episode 1 — Your First RPG Program): [tutorials/episode-01-hello-world.md](tutorials/episode-01-hello-world.md)
 - **Code for i Docs:** <https://codefori.github.io/docs/>
 
 #### Know More About the IBM i Landscape

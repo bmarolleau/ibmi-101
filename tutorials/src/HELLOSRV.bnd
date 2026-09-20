@@ -1,0 +1,13 @@
+/* ==========================================================   */
+/* Binder source : HELLOSRV                                     */
+/* Service prog  : MYLIB/HELLOSRV                               */
+/* Purpose       : Controlled export list for Hello World srvpgm*/
+/* Create        : CRTSRVPGM SRVPGM(MYLIB/HELLOSRV)            */
+/*                           MODULE(MYLIB/HELLOSRV)             */
+/*                           EXPORT(*SRCFILE)                   */
+/*                           SRCSTMF('./tutorials/src/HELLOSRV.bnd') */
+/*                           ACTGRP(*CALLER)                    */
+/* ==========================================================   */
+STRPGMEXP PGMLVL(*CURRENT) SIGNATURE('HELLOSRV V1')
+  EXPORT SYMBOL('GETGREETING')
+ENDPGMEXP

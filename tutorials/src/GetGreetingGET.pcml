@@ -1,0 +1,12 @@
+<pcml restUriPathTemplate="/{name}" version="7.0">
+    <program entrypoint="GETGREETING" name="GetGreeting"
+        parseorder="result"
+        path="/QSYS.LIB/MYLIB.LIB/HELLOSRV.SRVPGM"
+        restConsumes="*/*"
+        restHttpRequestMethod="GET"
+        restProduces="application/json"
+        threadsafe="false" wrapInputParams="false" wrapOutputParam="true">
+        <data length="50" name="name" type="char" restInPathParam="name" usage="input"/>
+        <data length="100" name="result" type="char" usage="output"/>
+    </program>
+</pcml>
