@@ -51,12 +51,16 @@ Bob interroge le système via SQL (`QSYS2`, `SYSTOOLS`) et CL pour analyser : bi
 
 ## ✓ Assistance SQL et optimisation
 
-Bob écrit, corrige et optimise des requêtes Db2 for i — SQL services, index advice, requêtes embarquées en RPG (`EXEC SQL`), curseurs.
+Bob agit comme un **Expert Db2 for i embarqué** (*Expert in a Box*) : il analyse les requêtes, détecte les problèmes de performance, propose des corrections et s'appuie sur les SQL services IBM i pour valider.
 
 > *"Réécris cette jointure pour utiliser l'index sur CUSTNO."*
+> *"Y a-t-il des full table scans dans ce programme ?"*
 
+**Slash command PPi :** `/review_sql` — analyse une requête ou le fichier actif et produit un diagnostic complet : index manquants, sélectivité des filtres, anti-patterns `EXEC SQL` en RPG, recommandations `SYSTOOLS.ACT_ON_INDEX_ADVICE`.
 **Skills activés :** `db2-sql-primer`
-**Outils Bob :** `execute_sql_statement` · `search_sql_examples` + `fetch_sql_example` pour les exemples SQL services documentés.
+**Outils Bob :** `execute_sql_statement` · `search_sql_examples` · `fetch_sql_example`
+
+> *Documentation : [bob.ibm.com/docs/ide/premium-packages/bob-for-i/slash-commands](https://bob.ibm.com/docs/ide/premium-packages/bob-for-i/slash-commands)*
 
 ---
 
@@ -91,7 +95,7 @@ Bob cartographie qui appelle quoi — modules, service programs, fichiers physiq
 | ✓ Génération de documentation | *"Documente HELLOSRV.rpgle en Markdown"* | `rpg-primer-basics` `cl-primer-basics` | Business Rules Extraction | `read_member` `write_file` |
 | ✓ Extraction de règles métier | *"Quelles sont les règles de remise ?"* | `rpg-primer-basics` `dds-primer-basics` `cobol-primer-basics` | Business Rules Extraction | `read_member` `search_qsys` |
 | ✓ Analyse de l'environnement IBM i | *"Liste les services IWS actifs"* | `iws-admin` `cl-primer-basics` | — | `execute_sql_statement` `execute_cl_command` |
-| ✓ Assistance SQL et optimisation | *"Optimise cette jointure sur CUSTNO"* | `db2-sql-primer` | — | `execute_sql_statement` `search_sql_examples` |
+| ✓ Assistance SQL et optimisation | `/review_sql` · *"Optimise cette jointure sur CUSTNO"* | `db2-sql-primer` | — | `execute_sql_statement` `search_sql_examples` |
 | ✓ Génération de spécifications techniques | *"Génère les specs IWS pour GETGREETING"* | `iws-admin` `rpg-primer-basics` | — | `execute_pase_command` `write_stream_file` `execute_cl_command` |
 | ✓ Analyse de dépendances | *"Qui appelle GETGREETING ?"* | `rpg-primer-basics` `cl-primer-basics` | Business Rules Extraction | `execute_sql_statement` `search_qsys` |
 
