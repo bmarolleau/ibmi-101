@@ -111,15 +111,10 @@ The filter now appears in the Object Browser, and you can expand `QRPGLESRC` to 
 
 1. In the Object Browser, right-click on **QRPGLESRC** under `MYLIB`.
 2. Select **New Member**.
-3. Enter:
+3. Enter the name `HELLO.RPGLE` — the extension sets the source type automatically.
+4. Press **Enter**. The empty member opens in the editor.
 
-   | Field | Value |
-   |-------|-------|
-   | Member name | `HELLO` |
-   | Source type | `RPGLE` |
-   | Description | `Hello World program` |
-
-4. Click **Confirm**. The empty member opens in the editor.
+> **Adding a description later:** Right-click the member in the Object Browser and select **Change description** to add or update the text description.
 
 ---
 
@@ -267,7 +262,7 @@ Save with `Ctrl+S`.
 
 ```cl
 CRTBNDRPG PGM(MYLIB/HELLO)
-          SRCSTMF('~/builds/IBMi-101/tutorials/src/hello.rpgle')
+          SRCSTMF('/home/YOURUSER/builds/IBMi-101/tutorials/src/hello.rpgle')
           DBGVIEW(*SOURCE) TGTCCSID(*JOB)
 ```
 

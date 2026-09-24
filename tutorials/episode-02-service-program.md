@@ -102,7 +102,7 @@ Code for i deploys the file to `~/builds/IBMi-101/tutorials/src/HELLOSRV.rpgle` 
 
 ```cl
 CRTRPGMOD MODULE(MYLIB/HELLOSRV)
-          SRCSTMF('~/builds/IBMi-101/tutorials/src/HELLOSRV.rpgle')
+          SRCSTMF('/home/YOURUSER/builds/IBMi-101/tutorials/src/HELLOSRV.rpgle')
           DBGVIEW(*SOURCE) TGTCCSID(*JOB)
 ```
 
@@ -139,7 +139,7 @@ The `HELLOSRV.bnd` file already exists in your workspace at [`tutorials/src/HELL
 When you run the **Create Service Program** action on it, Code for i automatically deploys it to the IFS deploy directory for this project (`~/builds/IBMi-101/tutorials/src/HELLOSRV.bnd`) before running `CRTSRVPGM`, which references it with `SRCSTMF`:
 
 ```cl
-CRTSRVPGM SRVPGM(MYLIB/HELLOSRV) ... SRCSTMF('~/builds/IBMi-101/tutorials/src/HELLOSRV.bnd')
+CRTSRVPGM SRVPGM(MYLIB/HELLOSRV) ... SRCSTMF('/home/YOURUSER/builds/IBMi-101/tutorials/src/HELLOSRV.bnd')
 ```
 
 ---
@@ -150,7 +150,7 @@ Create a `QSRVSRC` source physical file and store the binder source as a member:
 
 1. In the **Object Browser**, right-click `MYLIB` and select **New Source file**, name it `QSRVSRC`.
    *(Terminal alternative: `CRTSRCPF FILE(MYLIB/QSRVSRC) RCDLEN(112) TEXT('Binder Source')`)*
-2. Right-click `QSRVSRC` → **New Member**, name it `HELLOSRV`, source type `BND`.
+2. Right-click `QSRVSRC` → **New Member**, enter the name `HELLOSRV.BND` — the extension sets the source type automatically.
 3. Paste the binder source content and save with `Ctrl+S`.
 
 The `CRTSRVPGM` command then references it with `SRCFILE`/`SRCMBR`:
@@ -171,7 +171,7 @@ Code for i deploys the binder source and runs (workspace approach shown — adju
 CRTSRVPGM SRVPGM(MYLIB/HELLOSRV)
           MODULE(MYLIB/HELLOSRV)
           EXPORT(*SRCFILE)
-          SRCSTMF('~/builds/IBMi-101/tutorials/src/HELLOSRV.bnd')
+          SRCSTMF('/home/YOURUSER/builds/IBMi-101/tutorials/src/HELLOSRV.bnd')
           ACTGRP(*CALLER)
           TEXT('Hello World service program')
 ```
@@ -226,7 +226,7 @@ Code for i deploys the file to `~/builds/IBMi-101/tutorials/src/HELLO.rpgle` on 
 
 ```cl
 CRTRPGMOD MODULE(MYLIB/HELLO)
-          SRCSTMF('~/builds/IBMi-101/tutorials/src/HELLO.rpgle')
+          SRCSTMF('/home/YOURUSER/builds/IBMi-101/tutorials/src/HELLO.rpgle')
           DBGVIEW(*SOURCE) TGTCCSID(*JOB)
 
 CRTPGM PGM(MYLIB/HELLO)
