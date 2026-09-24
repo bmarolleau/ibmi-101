@@ -5,6 +5,14 @@
 
 In this episode you refactor the `HELLO` program from Episode 1 into a **service program**, then expose it as a **REST GET API** using IBM i Integrated Web Services (IWS) — with the help of **Bob Premium Package for i (PPi)**.
 
+> **How to open a terminal.**
+> Two types of terminal are used in this lab:
+>
+> - **IBM i shell terminal** (bash/QShell) — press `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac), type **IBM i: Launch Terminal Picker**, and select the shell option. Use this to run CL commands and `DSPJOBLOG`.
+> - **5250 terminal** — press `Ctrl+Shift+P`, type **IBM i: Launch Terminal Picker**, and select **5250**. Alternatively use IBM ACS, tn5250, or any 5250 emulator connected to your system.
+>
+> Wherever this lab says *"open an IBM i terminal"* or *"open a 5250 terminal"*, use the method above.
+
 ---
 
 ## What You Will Build
@@ -149,7 +157,7 @@ CRTSRVPGM SRVPGM(MYLIB/HELLOSRV) ... SRCSTMF('/home/YOURUSER/builds/IBMi-101/tut
 Create a `QSRVSRC` source physical file and store the binder source as a member:
 
 1. In the **Object Browser**, right-click `MYLIB` and select **New Source file**, name it `QSRVSRC`.
-   *(Terminal alternative: `CRTSRCPF FILE(MYLIB/QSRVSRC) RCDLEN(112) TEXT('Binder Source')`)*
+   *(5250 / IBM i terminal alternative: `CRTSRCPF FILE(MYLIB/QSRVSRC) RCDLEN(112) TEXT('Binder Source')`)*
 2. Right-click `QSRVSRC` → **New Member**, enter the name `HELLOSRV.BND` — the extension sets the source type automatically.
 3. Paste the binder source content and save with `Ctrl+S`.
 
@@ -176,7 +184,7 @@ CRTSRVPGM SRVPGM(MYLIB/HELLOSRV)
           TEXT('Hello World service program')
 ```
 
-> **Terminal alternative:** If you prefer, open the IBM i terminal (`Ctrl+Shift+P` → *IBM i: Open IBM i terminal*) and paste the command above. You can also verify the object was created with `DSPOBJD OBJ(MYLIB/HELLOSRV) OBJTYPE(*SRVPGM)`.
+> **Terminal alternative:** If you prefer, open an IBM i terminal and paste the command above. You can also verify the object was created with `DSPOBJD OBJ(MYLIB/HELLOSRV) OBJTYPE(*SRVPGM)`.
 
 Check the Output panel for a green check — the `HELLOSRV *SRVPGM` object is now in `MYLIB`.
 
@@ -243,7 +251,7 @@ CRTPGM PGM(MYLIB/HELLO)
 
 #### With Code for i (IBM i terminal in Bob IDE)
 
-Open the IBM i terminal in Bob IDE / VS Code (`Ctrl+Shift+P` → *IBM i: Open IBM i terminal*) and run:
+Open an IBM i terminal and run:
 
 ```cl
 CALL PGM(MYLIB/HELLO)
@@ -257,7 +265,7 @@ DSPJOBLOG
 
 Scroll to the end. You should see `Hello, World!`.
 
-> **Green screen alternative:** Switch to a 5250 session and run the same two commands — `CALL PGM(MYLIB/HELLO)` then `DSPJOBLOG`. The result is identical.
+> **5250 alternative:** Open a 5250 terminal and run the same two commands — `CALL PGM(MYLIB/HELLO)` then `DSPJOBLOG`. The result is identical.
 
 ---
 
@@ -325,7 +333,7 @@ startWebService.sh -server MYAPISVR -service GetGreetingGET
 
 ### Step 9 — Test the GET Service
 
-**From the IBM i terminal in Bob IDE** (`Ctrl+Shift+P` → *IBM i: Open IBM i terminal*):
+**From an IBM i terminal:**
 
 ```sh
 curl "http://localhost:<port>/web/services/GetGreetingGET/World"
