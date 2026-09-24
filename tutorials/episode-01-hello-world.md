@@ -3,7 +3,7 @@
 **Series:** Learn RPG on IBM i with Bob IDE / VS Code
 **Video:** [Watch on YouTube](https://www.youtube.com/watch?v=VTqkNDnARGM)
 
-In this tutorial you write your first RPG program using modern tools. You will follow the complete development workflow — from creating a source file to running the compiled program — using **two approaches**: the classic Source Physical File (SPF) and the modern IFS stream file.
+In this tutorial you write your first RPG program using modern tools. You will follow the complete development workflow — from creating a source file to running the compiled program — using **two approaches**: the classic Source Physical File (SPF) and the modern workspace stream file.
 
 ---
 
@@ -35,7 +35,9 @@ Once you are connected and comfortable navigating the UI, return here and contin
 ## Prerequisites
 
 - Bob IDE / VS Code with the **Code for IBM i** extension installed and connected to an IBM i system
-- Access to a 5250 green-screen session (via the IBM i terminal or a separate emulator)
+
+> **How source files work with Code for i.**
+> This tutorial covers two approaches. In the **SPF approach** (Part 1), source members live directly on the IBM i inside a source physical file — you open and edit them from the Object Browser and there is no local copy on your PC. In the **workspace stream file approach** (Part 2), you create and edit files **locally in your workspace** (on your PC) like any other file in VS Code. When you run an Action (`Ctrl+E`), Code for i automatically deploys the file to the IBM i IFS (this is what `"deployFirst": true` does) and then runs the compile command. The IFS deploy path for this project is `~/builds/IBMi-101`. You never need to create or edit files directly in the IFS Browser.
 
 ### Create Your Library
 
@@ -45,11 +47,7 @@ First, create the library where your compiled objects will live. In Bob IDE / VS
 2. Right-click anywhere in the Object Browser and select **Create library**.
 3. Enter `MYLIB` as the library name and confirm.
 
-Or run this in the IBM i terminal (`Ctrl+Shift+P` → *IBM i: Open IBM i terminal*):
-
-```cl
-CRTLIB LIB(MYLIB) TEXT('My RPG library')
-```
+*(Terminal alternative: `CRTLIB LIB(MYLIB) TEXT('My RPG library')`)*
 
 > If `MYLIB` already exists you will get a harmless message — no action needed.
 
@@ -61,33 +59,28 @@ Before you compile anything, set `MYLIB` as your **current library** in Bob IDE 
 2. Click the **pencil icon** (or right-click) next to **Current library**.
 3. Type `MYLIB` and confirm.
 
-Alternatively, run this in the IBM i terminal (`Ctrl+Shift+P` → *IBM i: Open IBM i terminal*):
-
-```cl
-CHGCURLIB CURLIB(MYLIB)
-```
+*(Terminal alternative: `CHGCURLIB CURLIB(MYLIB)`)*
 
 > **Why does this matter?** The compile actions in Bob IDE / VS Code use the `&CURLIB` variable to determine where to place the compiled object. If your current library is wrong, the program will be created in the wrong library.
 
 ---
 
-## Part 1 — Source Physical File (Traditional Approach)
+## Part 1 — Source Physical File (Traditional / Legacy Approach)
+
+A **Source Physical File (SPF)** is a special database file on the IBM i that stores source code as *members*. Each member is one source program. This is the traditional approach — source lives entirely on the IBM i, and you open and edit members directly from the Object Browser in Code for i.
+
+> **No local deploy needed for SPF.** When you open a source member from the Object Browser, Code for i streams it directly from the IBM i into the editor. Saving with `Ctrl+S` writes it back to the member immediately. There is no local file on your PC and no deploy step.
 
 ### Step 1 — Create a Source Physical File
 
-A **Source Physical File (SPF)** is a special database file that stores source code as *members*. Each member is one source program.
+In the **Object Browser**, right-click `MYLIB` and select **New Source file**, then name it `QRPGLESRC`.
 
-Open the **IBM i terminal** in Bob IDE / VS Code (`Ctrl+Shift+P` → *IBM i: Open IBM i terminal*) and run:
-
-```cl
-CRTSRCPF FILE(MYLIB/QRPGLESRC) RCDLEN(112) TEXT('RPG Source Members')
-```
+*(Terminal alternative: `CRTSRCPF FILE(MYLIB/QRPGLESRC) RCDLEN(112) TEXT('RPG Source Members')`)*
 
 | Parameter | Value | Purpose |
 |-----------|-------|---------|
-| `FILE` | `MYLIB/QRPGLESRC` | Library and file name |
+| `FILE` | `MYLIB/QRPGLESRC` | Library and file name — `QRPGLESRC` is the conventional name for an RPG source physical file |
 | `RCDLEN` | `112` | Standard record length for ILE RPG source |
-| `TEXT` | `'RPG Source Members'` | Description |
 
 > **Why 112?** ILE RPG source members use a 112-byte record: 6 bytes for sequence number + date, 1 byte for indicator, and 100 bytes for code.
 
@@ -95,7 +88,7 @@ CRTSRCPF FILE(MYLIB/QRPGLESRC) RCDLEN(112) TEXT('RPG Source Members')
 
 ### Step 2 — Create a Filter in Bob IDE / VS Code
 
-A **filter** tells the Code for IBM i extension which library/file/member combination to display in the object browser.
+A **filter** tells the Code for IBM i extension which library/file/member combination to display in the Object Browser.
 
 1. In Bob IDE / VS Code, open the **IBM i** side panel (the IBM i icon in the Activity Bar).
 2. Under **Object Browser**, click **+** to add a new filter.
@@ -117,7 +110,7 @@ The filter now appears in the Object Browser, and you can expand `QRPGLESRC` to 
 ### Step 3 — Create a New RPG Source Member
 
 1. In the Object Browser, right-click on **QRPGLESRC** under `MYLIB`.
-2. Select **Create member**.
+2. Select **New Member**.
 3. Enter:
 
    | Field | Value |
@@ -164,10 +157,7 @@ Save the file with `Ctrl+S`.
 Code for IBM i uses **Actions** to compile source members.
 
 1. With the `HELLO` member open, press `Ctrl+E` (Windows/Linux) or `Cmd+E` (Mac) — or right-click in the editor and select **Run Action**.
-2. A list of available actions appears at the top. Select:
-   ```
-   CRTBNDRPG
-   ```
+2. A list of available actions appears at the top. Select **Create RPGLE Program (CRTBNDRPG)**.
 3. Wait for the compile to finish. The **Output** panel at the bottom shows the result.
 
    - **Green check** = compiled successfully
@@ -177,9 +167,37 @@ Code for IBM i uses **Actions** to compile source members.
 
 ---
 
-### Step 6 — Run the Program from the Green Screen
+### Step 6 — Debug the Program
 
-Switch to a 5250 terminal session and run:
+Code for i has a built-in source-level debugger that lets you step through your RPG code line by line, inspect variables, and set breakpoints — all inside VS Code, without a green screen.
+
+> **Prerequisite:** The program must have been compiled with `DBGVIEW(*SOURCE)`, which the **CRTBNDRPG** action already includes.
+
+1. In the **Object Browser**, expand `MYLIB` and locate the `HELLO *PGM` object.
+2. Right-click it and select **Start Debugging**.
+3. Code for i opens the source member in a read-only debug view and the debugger connects to the IBM i.
+4. The program pauses at the first executable statement. You will see a **yellow arrow** in the gutter indicating the current line.
+
+**Useful debugger controls:**
+
+| Action | Keyboard | What it does |
+|---|---|---|
+| Step Over | `F10` | Execute current line, move to next |
+| Step Into | `F11` | Step into a called procedure |
+| Continue | `F5` | Run until next breakpoint or end |
+| Add breakpoint | Click gutter | Pause execution at that line |
+| Inspect variable | Hover over name | Shows current value in a tooltip |
+
+5. Hover over `'Hello World!'` on the `dsply` line — the debugger shows the literal value.
+6. Press `F5` to continue. The program runs to completion.
+
+> **Why `DBGVIEW(*SOURCE)`?** This parameter tells the compiler to store the source mapping in the object. Without it the debugger shows only machine-level statements, not your RPG source lines.
+
+---
+
+### Step 7 — Run the Program
+
+Open the IBM i terminal in Bob IDE / VS Code (`Ctrl+Shift+P` → *IBM i: Open IBM i terminal*) and run:
 
 ```cl
 CALL PGM(MYLIB/HELLO)
@@ -187,11 +205,13 @@ CALL PGM(MYLIB/HELLO)
 
 The program runs silently. The message is written to the **job log**, not the screen.
 
+> **Green screen alternative:** Switch to a 5250 terminal session and run the same command.
+
 ---
 
-### Step 7 — View the Output in the Job Log
+### Step 8 — View the Output in the Job Log
 
-Still on the green screen, display the job log:
+Still in the IBM i terminal, display the job log:
 
 ```cl
 DSPJOBLOG
@@ -205,28 +225,20 @@ Hello World!
 
 > **What is the job log?** The job log records all messages generated by jobs running on the system. `DSPLY` writes to the external message queue, which appears here.
 
----
-
-## Part 2 — IFS Stream File (Modern Approach)
-
-The **Integrated File System (IFS)** stores files as stream files in a Unix-like directory structure — no members, no record length constraints. This is the preferred approach for modern RPG development.
-
-### Step 8 — Create an IFS Folder
-
-1. In the Bob IDE / VS Code IBM i side panel, open the **IFS Browser**.
-2. Navigate to your home directory (e.g. `/home/YOURUSER`).
-3. Right-click and select **Create directory**.
-4. Name it `rpg` (or `src`).
-
-The directory `/home/YOURUSER/rpg` is now created.
+> **Green screen alternative:** Switch to a 5250 session and run `DSPJOBLOG` there — the output is the same.
 
 ---
 
-### Step 9 — Create an RPG Stream File
+## Part 2 — Workspace Stream File (Modern Approach)
 
-1. Right-click on the new `/home/YOURUSER/rpg` directory.
-2. Select **New file**.
-3. Name the file `hello.rpgle`.
+In this approach your source file lives **locally in your workspace** (on your PC). Code for i deploys it to the IBM i IFS automatically when you run an Action, then compiles it from there. The IFS is just a staging area — your workspace is the source of truth, and you can put it under Git version control.
+
+> **IFS deploy path for this project:** `~/builds/IBMi-101`
+> Code for i copies your workspace files to this path on the IBM i before each compile. The path is configured in your Code for i connection settings under **Deploy directory**.
+
+### Step 8 — Create a Local Source File
+
+In the VS Code Explorer panel, open the `tutorials/src/` folder. The file `hello.rpgle` may already exist there. If not, right-click the `tutorials/src` folder and select **New File**, name it `hello.rpgle`.
 
 The `.rpgle` extension tells Code for IBM i (and the compiler) that this is an ILE RPG source file.
 
@@ -234,7 +246,7 @@ The empty file opens in the editor. Enter the same code as before:
 
 ```rpgle
 **free
-// Hello World - Episode 1 (IFS version)
+// Hello World - Episode 1 (stream file version)
 
 ctl-opt dftactgrp(*no) actgrp(*new);
 
@@ -247,59 +259,74 @@ Save with `Ctrl+S`.
 
 ---
 
-### Step 10 — Compile the IFS Source File
+### Step 9 — Compile the Stream File Source
 
 1. With `hello.rpgle` open in the editor, press `Ctrl+E` (Windows/Linux) or `Cmd+E` (Mac) to open **Run Action**.
-2. Select the **CRTBNDRPG** action.
-3. The compile runs. Check the Output panel for success or errors.
+2. Select the **Create RPGLE Program (CRTBNDRPG)** action.
+3. Code for i deploys the file to `~/builds/IBMi-101/tutorials/src/hello.rpgle` on the IBM i, then runs:
 
-By default, Code for IBM i places the compiled program object in the library configured in your connection settings (usually your current library).
+```cl
+CRTBNDRPG PGM(MYLIB/HELLO)
+          SRCSTMF('~/builds/IBMi-101/tutorials/src/hello.rpgle')
+          DBGVIEW(*SOURCE) TGTCCSID(*JOB)
+```
 
-> **Tip:** You can configure a custom compile command — or set the target library explicitly — in the Code for IBM i action settings.
+Check the Output panel for a green check.
 
 ---
 
-### Step 11 — Run the IFS-Compiled Program
+### Step 10 — Debug the Stream File Program
 
-Back on the green screen:
+Debugging a workspace stream file program works the same way as for a member:
+
+1. In the **Object Browser**, expand `MYLIB` and locate the `HELLO *PGM` object.
+2. Right-click it and select **Start Debugging**.
+3. Code for i connects the debugger and pauses at the first executable line.
+4. Step through the code with `F10`, hover over variables to inspect them, and press `F5` to run to completion.
+
+> **Tip:** The debugger always connects to the compiled object on the IBM i — it doesn't matter whether the source came from a member or a workspace stream file. As long as the object was compiled with `DBGVIEW(*SOURCE)`, debugging works identically.
+
+---
+
+### Step 11 — Run the Stream-File-Compiled Program
+
+In the IBM i terminal in Bob IDE / VS Code (`Ctrl+Shift+P` → *IBM i: Open IBM i terminal*):
 
 ```cl
 CALL PGM(MYLIB/HELLO)
-```
-
-Then display the job log again:
-
-```cl
 DSPJOBLOG
 ```
 
 You will see `Hello World from IFS!` at the end of the log.
 
+> **Green screen alternative:** Switch to a 5250 session and run the same two commands.
+
 ---
 
 ## Summary
 
-You have now completed the full RPG development workflow — twice:
+You have now completed the full RPG development workflow using both approaches:
 
 ```mermaid
 flowchart LR
-    A[Write source code\nin Bob IDE / VS Code] --> B[Compile with\nCRTBNDRPG action]
-    B --> C{Compile\nresult?}
-    C -->|Errors| D[Fix errors\nin editor]
+    A["Write source\nin Bob IDE"] --> B["Compile\nCRTBNDRPG action"]
+    B -->|"errors"| D["Fix errors\nin editor"]
     D --> B
-    C -->|Success| E[Run program\nCALL PGM]
-    E --> F[View output\nDSPJOBLOG]
+    B -->|"success"| E["Debug\nStart Debugging"]
+    E --> F["Run program\nCALL PGM"]
+    F --> G["View output\nDSPJOBLOG"]
 ```
 
-| Step | SPF approach | IFS approach |
-|------|-------------|-------------|
-| Store source | Member in `QRPGLESRC` | Stream file `.rpgle` |
-| Create source | Right-click SPF → Create member | Right-click IFS dir → New file |
-| Compile | **Run Action** (`Ctrl+E` / `Cmd+E`) → CRTBNDRPG | **Run Action** (`Ctrl+E` / `Cmd+E`) → CRTBNDRPG |
+| Step | SPF approach | Workspace stream file approach |
+|------|-------------|-------------------------------|
+| Source lives on | IBM i, in `MYLIB/QRPGLESRC` member | Your PC workspace, deployed to `~/builds/IBMi-101` |
+| Create source | Object Browser → right-click `MYLIB` → **New Source file**, then right-click `QRPGLESRC` → **New Member** | VS Code Explorer → right-click folder → **New File** |
+| Edit source | Open member from Object Browser — edits saved directly to IBM i | Edit locally in VS Code — deployed automatically on Action run |
+| Compile | `Ctrl+E` → **Create RPGLE Program (CRTBNDRPG)** | `Ctrl+E` → **Create RPGLE Program (CRTBNDRPG)** |
 | Run | `CALL PGM(MYLIB/HELLO)` | `CALL PGM(MYLIB/HELLO)` |
 | View output | `DSPJOBLOG` | `DSPJOBLOG` |
 
-Both approaches produce the same program object. The **IFS approach** is recommended for new projects because it integrates naturally with Git and modern tooling.
+Both approaches produce the same program object. Choose based on your project conventions: **SPF** for legacy or team environments already on QSYS, **workspace stream files** for new projects with Git and modern tooling.
 
 ---
 
@@ -307,10 +334,12 @@ Both approaches produce the same program object. The **IFS approach** is recomme
 
 | Concept | What it is |
 |---------|-----------|
-| **Source Physical File** | A database file (`*SRCPF`) that stores source code as members |
-| **QRPGLESRC** | Convention name for an RPG source physical file |
+| **Source Physical File** | A database file (`*SRCPF`) that stores source code as members — the traditional IBM i approach |
+| **QRPGLESRC** | Conventional name for an RPG source physical file |
 | **RPGLE member** | One source program stored inside a source physical file |
-| **IFS stream file** | A regular file stored in a Unix-like directory on IBM i |
+| **Workspace stream file** | A source file edited locally on your PC and deployed to the IBM i IFS by Code for i when you run an Action |
+| **IFS** | Integrated File System — the Unix-like file system on IBM i where Code for i stages your deployed stream files |
+| **Deploy directory** | The IFS path Code for i copies your workspace files to before compiling — `~/builds/IBMi-101` for this project |
 | **`**free`** | Compiler directive enabling fully free-format RPG syntax |
 | **`ctl-opt`** | Control options — program-level settings (replaces the H-spec) |
 | **`dsply`** | Displays a message to the job log / external message queue |
@@ -322,12 +351,13 @@ Both approaches produce the same program object. The **IFS approach** is recomme
 
 ## What's Next
 
-In the next episode we will refactor `HELLO` into a **service program caller**:
+In the next episode you will work with **two source files**:
 
-1. Write a `NOMAIN` module (`HELLOSRV`) that exports a `GetGreeting` procedure
-2. Bind it into a `*SRVPGM`
-3. **Replace `HELLO.rpgle` with a new version** that calls the service program instead of using `DSPLY` directly
+| File | Purpose |
+|------|---------|
+| `HELLOSRV.rpgle` | New `NOMAIN` module — exports the `GetGreeting` procedure, compiled into a `*SRVPGM` |
+| `HELLO.rpgle` | Rewritten caller — binds to `HELLOSRV` and calls `GetGreeting` instead of using `DSPLY` directly |
 
-> **Note:** The `HELLO.rpgle` file in Episode 2 is a **completely different program** from the one you wrote here. It replaces this version — same object name (`HELLO`), different source. The Episode 2 version requires a two-step compile (`CRTRPGMOD` + `CRTPGM`) and cannot be compiled with `CRTBNDRPG` alone.
+> **Note:** The `HELLO.rpgle` you wrote in this episode is **replaced** in Episode 2 by a different version — same object name (`MYLIB/HELLO *PGM`), completely different source. The Episode 2 version requires a two-step compile (`CRTRPGMOD` + `CRTPGM`) because it must be bound to `HELLOSRV` at link time; `CRTBNDRPG` alone is not sufficient.
 
 > **Try it yourself:** Modify the `DSPLY` message to display your name and recompile. Watch how fast the compile-test cycle is with Bob IDE / VS Code and Code for IBM i.
